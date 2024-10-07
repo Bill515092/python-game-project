@@ -11,18 +11,25 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.position = (x, y)
         self.velocity = (x_vel, y_vel)
+       
     
     def update(self):
-        self.postion = (self.position[0], self.velocity[0], self.position[1])
+        self.position = (self.position[0] + self.velocity[0], self.position[1] + self.velocity[1])
 
     def draw(self, surface):
         pygame.draw.circle(surface, (255, 0 ,0), self.position, 10)
     
-    def move_left(self):
-        self.velocity = (-1, self.velocity[1])
+    def move_left(self, velocity=-1):
+        self.velocity = (velocity, self.velocity[1])
 
-    def move_right(self):
-        self.velocity = (1, self.velocity[1])
+    def move_right(self, velocity=1):
+        self.velocity = (velocity, self.velocity[1])
+    
+    def move_up(self, velocity=-1):
+        self.velocity = (self.velocity[0], velocity)
+
+    def move_down(self, velocity=1):
+        self.velocity = (self.velocity[0], velocity)
 
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -55,7 +62,22 @@ while (gameRun):
                 player.move_left()
             elif event.key == pygame.K_d:
                 player.move_right()
-    
+            elif event.key == pygame.K_w:
+                player.move_up()
+            elif event.key == pygame.K_s:
+                player.move_down()
+
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_a:
+                player.move_left(0) 
+            elif event.key == pygame.K_d:
+                player.move_right(0)
+            elif event.key == pygame.K_w:
+                player.move_up(0)
+            elif event.key == pygame.K_s:
+                player.move_down(0)
+
+
     player.update()
 
     player.draw(screen)
