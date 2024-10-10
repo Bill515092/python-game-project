@@ -5,19 +5,27 @@ pygame.init()
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+WHITE = (255, 255, 255)
+
 class Player(pygame.sprite.Sprite):
 
     def __init__(self, x, y, x_vel, y_vel):
         super().__init__()
+        self.rect = pygame.Rect(x, y, 20, 20) 
         self.position = (x, y)
         self.velocity = (x_vel, y_vel)
        
     
     def update(self):
-        self.position = (self.position[0] + self.velocity[0], self.position[1] + self.velocity[1])
+        # self.position = (self.position[0] + self.velocity[0], self.position[1] + self.velocity[1])
+        self.rect.x += self.velocity[0]
+        self.rect.y += self.velocity[1]
 
     def draw(self, surface):
-        pygame.draw.circle(surface, (255, 0 ,0), self.position, 10)
+        pygame.draw.circle(surface, (255, 0 ,0), self.rect.center, 10)
     
     def move_left(self, velocity=-1):
         self.velocity = (velocity, self.velocity[1])
@@ -37,25 +45,28 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 background = pygame.image.load('/Users/williamhutchinson/python-game-project/assets/game-background1.png')
 
 player = Player(320, 240, 0 ,0)
+platform = pygame.Rect(50, 400, 100, 50)
 
 
-def gameBackground(background):
-    size = pygame.transform.scale(background, (800, 600))
+def game_background(background):
+    size = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
     screen.blit(size, (0, 0))
 
 
-gameRun = True
-while (gameRun):
+game_run = True
+while (game_run):
 
     screen.fill((0, 0, 0))
-
-    gameBackground(background)
-
-
+    #game_background(background)
+    colour = WHITE
+    
+    if player.rect.colliderect(platform): 
+        colour = RED
+    pygame.draw.rect(screen, colour, platform)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            run = False
+            game_run = False
         
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_a:
